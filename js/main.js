@@ -2932,14 +2932,27 @@ requirejs.onError = function (err) {
         rh.adBlockErrorHandled = true;
     }
 };
+
+
+
+
+
+
+
 rh.initialize = function(){
     console.log("nydn 🎯  rh.initialize");
     rh.comscore.download();
     rh.bp.initialize();
     rh.interactive();
-    rh.aol.download();
-    // rh.aolOrOra();
-    rh.ads.initialize();
+    
+    let aolOptimeraPromise = new Promise((resolve, reject) => {
+        rh.ads.initialize();
+        resolve();
+    });
+    aolOptimeraPromise.then(() => {
+        rh.aol.download();
+    });    
+
     rh.addons();
     rh.pagefair.measure.download();
     nydnRequires([nydn.urls.nydnQuery], function(util) {

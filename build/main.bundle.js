@@ -2881,14 +2881,21 @@ requirejs.onError = function (err) {
         rh.adBlockErrorHandled = true;
     }
 };
+
 rh.initialize = function () {
     console.log("nydn 🎯  rh.initialize");
     rh.comscore.download();
     rh.bp.initialize();
     rh.interactive();
-    rh.aol.download();
-    // rh.aolOrOra();
-    rh.ads.initialize();
+
+    var aolOptimeraPromise = new Promise(function (resolve, reject) {
+        rh.ads.initialize();
+        resolve();
+    });
+    aolOptimeraPromise.then(function () {
+        rh.aol.download();
+    });
+
     rh.addons();
     rh.pagefair.measure.download();
     nydnRequires([nydn.urls.nydnQuery], function (util) {

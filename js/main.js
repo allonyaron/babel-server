@@ -1,4 +1,5 @@
-'use strict'
+import optimera from './optimera';
+
 let JUNE2;
 var nydnRequires = require.config({
     context: "nydn",
@@ -1807,7 +1808,7 @@ var rhAdArr2 = [];
         console.log("nydn 🎯  rh.ads.dependencies.notMobile");
         rh.ads.dfp.waitingList.push(rh.ads.dfp.url);
         if (nydn.bidder.contains("optimera")) {
-            rh.ads.optimera.getURL();
+            optimera.getURL();
         }
         if (nydn.bidder.contains("lotame")) {
             rh.ads.lotame.download();
@@ -1856,7 +1857,7 @@ var rhAdArr2 = [];
         console.log("nydn 🎯  rh.ads.dependencies.mobile");
         rh.ads.dfp.waitingList.push(rh.ads.dfp.url);
         if (nydn.bidder.contains("optimera")) {
-            rh.ads.optimera.getURL();
+            optimera.getURL();
         }
         if (nydn.bidder.contains("lotame")) {
             rh.ads.lotame.download();
@@ -2014,8 +2015,8 @@ var rhAdArr2 = [];
         console.log("nydn 🎯  rh.ads.dfp.afterDefine1");
         if (nydn.bidder.contains("optimera")) {
             rh.ads.dfp.waitingList.push(nydn.urls.optimera);
-            rh.ads.optimera.setup();
-            rh.ads.optimera.download();
+            optimera.setup();
+            optimera.download();
         }
         if (rh.platform!=="mobile"){
             //if (nydn.bidder.contains("amazon")) rh.ads.amazon.exe();
@@ -2057,7 +2058,7 @@ var rhAdArr2 = [];
             .setTargeting("page_url", currentLocation);
 
         if (nydn.qa=="true") googletag.pubads().setTargeting("qa", nydn.qa);
-        if (nydn.bidder.contains("optimera"))  rh.ads.optimera.targeting();
+        if (nydn.bidder.contains("optimera"))  optimera.targeting();
         if (nydn.bidder.contains("lotame")) rh.ads.lotame.setTargeting();
         if (nydn.bidder.contains("openxLite")) rh.ads.openx.lite.setTargeting();
         if (nydn.hasOwnProperty("flexName") && nydn.hasOwnProperty("flexValue"))
@@ -2699,78 +2700,7 @@ function ccauds(data) {
     };
 }
 //OPTIMERA
-var oDv = oDv || [];
-var oVa = oVa || {};
-{
-    rh.ads.optimera = {};
-    rh.ads.optimera.src = "";
-    rh.ads.optimera.url = "https://s3.amazonaws.com/elasticbeanstalk-us-east-1-397719490216/external_json/oPS.js";
-    rh.ads.optimera.getURL = function() {       //the JSON URL that contains the oVa values. It doesn't exist for new articles.
-        var optimeraHost = window.location.host;
-        var optimeraPathName = window.location.pathname;
-        var rand = Math.random();
-        var nydnId = 1;
-        rh.ads.optimera.src = "https://s3.amazonaws.com/elasticbeanstalk-us-east-1-397719490216/json/client/" + nydnId + "/" +  optimeraHost + optimeraPathName + ".js?t=" + rand;
-        nydn.urls.optimera = rh.ads.optimera.src;
-        console.log("nydn 🎯 rh.ads.optimera.getURL  "+nydn.urls.optimera);
-        console.log("nydn 🎯 rh.ads.optimera.getURL oVa = "+JSON.stringify(oVa));
-    };
-    rh.ads.optimera.setup = function() {        //set up defauly valuse for oDv and oVa BEFORE downloading JSON
-        console.log("nydn 🎯 rh.ads.optimera.setup ");
-        oDv.push("1");
-        rhAdArr2.forEach(function(rhAdx){
-            if (rhAdx !=="div-gpt-ad-x100" && rhAdx!="div-gpt-ad-x108"){
-                oDv.push(rhAdx);
-                oVa[rhAdx] = ["NULL"];
-            }
-        });
-        if (!!document.querySelector("[id*='r-aol-video']")) {
-            var aolVideoDivId = document.querySelector("[id*='r-aol-video']").id;
-            oDv.push(["v", aolVideoDivId]);
-            oVa[aolVideoDivId] = ["NULL"];
-        }; 
-        console.log("nydn 🎯 rh.ads.optimera.setup oDv = "+oDv);
-        console.log("nydn 🎯 rh.ads.optimera.setup oVa = "+JSON.stringify(oVa));
-        //rh.ads.optimera.download();
-    };
-    rh.ads.optimera.download = function() {     //download JSON with final oVa
-        nydnRequires([nydn.urls.optimera], function(util) {
-            console.log("nydn 🎯  rh.ads.optimera.download ✓ "+nydn.urls.optimera);
-            console.log("nydn 🎯 rh.ads.optimera.download oVa = "+JSON.stringify(oVa));
-        });
-        rh.ads.optimera.download2();
-    };
-    rh.ads.optimera.download2 = function() {    //download oPs that reports ad units loading
-        nydnRequires([rh.ads.optimera.url], function(util) {
-            console.log("nydn 🎯  rh.ads.optimera.download 2 ✓");
-        });
-    };
-    rh.ads.optimera.targeting = function() {        //loops thourgh defined ad nits, and setTargeting
-        var rhAdx;
-        nydnRequires([nydn.urls.optimera], function(util) {     //must wait for JSON if it exists.
-            console.log("nydn 🎯 rh.ads.optimera.targeting");
-            rhAdArr.forEach(function(rhAd){
-                //alert("!!rhAdArr[0].u "+!!rhAdArr[0].u);
-                //if (!!rhAdArr[0].u) {
-                rhAdx = rhAd.nydnDivID;
-                if (rhAdx !=="div-gpt-ad-x100" && rhAdx !="div-gpt-ad-x108"){
-                    rhAd.setTargeting("oView", oVa[rhAdx]);
-                    rh.ads.log[rhAdx].oView = oVa[rhAdx];
-                    console.log("nydn 🎯 rh.ads.optimera.targeting oVa["+rhAdx+"] = "+JSON.stringify( oVa[rhAdx]));
-                }
-            });
-            rh.ads.dfp.checkList.bidder["optimera"] = true;
-            rh.ads.dfp.checkList.done +=1;
-            console.log("nydn 🎯 rh.ads.optimera.targeting DONE");
-        });
-    };
-    rh.ads.optimera.refresh = function() {
-        nydnRequires([rh.ads.optimera.url], function(util) {
-            console.log("nydn 🎯  rh.ads.optimera.refresh");
-            oPageUnload('1');
-        });
-    };
-}
+v
 //NATIVO
 {
     rh.ads.nativo = {};

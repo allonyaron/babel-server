@@ -11,11 +11,8 @@ optimera.getURL = function() {       //the JSON URL that contains the oVa values
     var nydnId = 1;
     optimera.src = "https://s3.amazonaws.com/elasticbeanstalk-us-east-1-397719490216/json/client/" + nydnId + "/" +  optimeraHost + optimeraPathName + ".js?t=" + rand;
     nydn.urls.optimera = optimera.src;
-    console.log("nydn 🎯 optimera.getURL  "+nydn.urls.optimera);
-    console.log("nydn 🎯 optimera.getURL oVa = "+JSON.stringify(oVa));
 };
 optimera.setup = function() {        //set up defauly valuse for oDv and oVa BEFORE downloading JSON
-    console.log("nydn 🎯 optimera.setup ");
     oDv.push("1");
     rhAdArr2.forEach(function(rhAdx){
         if (rhAdx !=="div-gpt-ad-x100" && rhAdx!="div-gpt-ad-x108"){
@@ -28,8 +25,6 @@ optimera.setup = function() {        //set up defauly valuse for oDv and oVa BEF
         oDv.push(["v", aolVideoDivId]);
         oVa[aolVideoDivId] = ["NULL"];
     }; 
-    console.log("nydn 🎯 optimera.setup oDv = "+oDv);
-    console.log("nydn 🎯 optimera.setup oVa = "+JSON.stringify(oVa));
     //optimera.download();
 };
 optimera.download = function() {     //download JSON with final oVa
